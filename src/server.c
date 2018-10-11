@@ -143,8 +143,11 @@ void handle_http_request(int fd, struct cache *cache)
 {
     const int request_buffer_size = 65536; // 64K
     char request[request_buffer_size];
+    //for sscanf
+    char path[]=
+    char address[]=
 
-    // Read request
+    // Read request-> GET
     int bytes_recvd = recv(fd, request, request_buffer_size - 1, 0);
 
     if (bytes_recvd < 0) {
@@ -156,7 +159,9 @@ void handle_http_request(int fd, struct cache *cache)
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
-
+    
+    sscanf(request, type, path, string)
+    
     // Read the three components of the first request line
 
     // If GET, handle the get endpoints
