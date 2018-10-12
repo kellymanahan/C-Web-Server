@@ -143,11 +143,13 @@ void handle_http_request(int fd, struct cache *cache)
 {
     const int request_buffer_size = 65536; // 64K
     char request[request_buffer_size];
-    //for sscanf
-    char path[]=
-    char address[]=
+    //find out where things are
+    char *path;
+    char *type;
+    char *string_query;
 
     // Read request-> GET
+    //keyword: file descriptor = an index into an array of open files
     int bytes_recvd = recv(fd, request, request_buffer_size - 1, 0);
 
     if (bytes_recvd < 0) {
@@ -160,8 +162,11 @@ void handle_http_request(int fd, struct cache *cache)
     // IMPLEMENT ME! //
     ///////////////////
     
-    sscanf(request, type, path, string)
-    
+    sscanf(request, "%s %s %s", path, type, string_query);
+    printf("Path %s\n", path);
+    printf("Type %s\n", type);
+    printf("HTTP %s\n", string_query);
+
     // Read the three components of the first request line
 
     // If GET, handle the get endpoints
@@ -169,6 +174,15 @@ void handle_http_request(int fd, struct cache *cache)
     //    Check if it's /d20 and handle that special case
     //    Otherwise serve the requested file by calling get_file()
 
+    //NULL terminate 
+    if (strcmp(path, "GET") == 0) {
+        if (strcmp (string_query, "/d20") == 0) {
+            get_d20(fd); 
+        }
+        else {
+            resp_404(fd);
+        }
+    }
 
     // (Stretch) If POST, handle the post request
 }
