@@ -76,13 +76,16 @@ int send_response(int fd, char *header, char *content_type, void *body, int cont
 void get_d20(int fd)
 {
     // Generate a random number between 1 and 20 inclusive
-    
+srand(time(NULL));
+char res_body[8];
+
+sprintf(res_body,"%d\n", (rand()%20)+1);
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
 
     // Use send_response() to send it back as text/plain data
-
+send_response(fd, "HTTP/1 200 OK", "text/plain", res_body, strlen(res_body));
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
@@ -144,9 +147,10 @@ void handle_http_request(int fd, struct cache *cache)
     const int request_buffer_size = 65536; // 64K
     char request[request_buffer_size];
     //find out where things are
-    char *path;
-    char *type;
-    char *string_query;
+    //max amount of data
+    char path[8];
+    char type[1024];
+    char string_query[128];
 
     // Read request-> GET
     //keyword: file descriptor = an index into an array of open files
