@@ -52,13 +52,14 @@ int send_response(int fd, char *header, char *content_type, void *body, int cont
 {
     const int max_response_size = 65536;
     char response[max_response_size];
-
+    char response_length;
     // Build HTTP response and store it in response
 
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
-
+    //sscanf
+    //printf
     // Send it all!
     int rv = send(fd, response, response_length, 0);
 
@@ -124,6 +125,19 @@ void get_file(int fd, struct cache *cache, char *request_path)
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
+    struct file_data *filedata;
+    filedata = file_load(request_path);
+
+    if(filedata == NULL)
+    {
+        resp_404(fd);
+    }
+    else {
+        char *mime_type = mime_type_get(request_path);
+        send_response(fd, "http/1.1 200 OK", mime_type, filedata->data, filedata-> size);
+        {
+        file_free(filedata);
+    }
 }
 
 /**

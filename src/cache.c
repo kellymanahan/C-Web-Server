@@ -12,16 +12,33 @@ struct cache_entry *alloc_entry(char *path, char *content_type, void *content, i
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
+    struct cache_entry *ce = malloc(sizeof(*ce));
+    ce->path = malloc(strlen(path));
+
+    ce->content_type = malloc(strlen(content_type));
+    strcpy(ce->path, path);
+
+    ce->content_type = malloc(strlen(content_type));
+    strcpy(ce->content_type, content_type);
+
+    ce->content = maloc(content_length);
+    memcpy(ce->content, content, content_length);
+
+    ce->content_length = content_length;
 }
 
 /**
  * Deallocate a cache entry
  */
-void free_entry(void *v_ent, void *varg)
+void free_entry(struct cache_entry *v_ent)
 {
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
+    free(v_ent->content);
+    free(v_ent->content_type);
+    free(v_ent->path);
+    free(v_ent);
 }
 
 /**
@@ -91,9 +108,15 @@ struct cache_entry *dllist_remove_tail(struct cache *cache)
  */
 struct cache *cache_create(int max_size, int hashsize)
 {
-    ///////////////////
-    // IMPLEMENT ME! //
-    ///////////////////
+  struct cache *cache = malloc(sizeof(*cache));
+  //DLL reference
+  cache ->head = NULL;
+  cache -> tail = NULL;
+  cache->index = hashtable_create(hashsize, NULL);
+  cache->max_size = max_size;
+  cache->cur_size = 0;
+
+  return cache;
 }
 
 /**
@@ -103,11 +126,38 @@ struct cache *cache_create(int max_size, int hashsize)
  * 
  * NOTE: doesn't check for duplicate cache entries
  */
+
+void cache_free(struct cache *cache)
+{
+    struct cahe_entry *curr_entry = cache->head;
+
+    while (curr_entry != NULL)
+    {
+        struct cache_entry *ne = curr_entry->next;
+        free_entry(curr_entry);
+
+        curr_entry = ne;
+    }
+
+    hastable_destroy(cache->index);
+
+    free(cache);
+}
+
 void cache_put(struct cache *cache, char *path, char *content_type, void *content, int content_length)
 {
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
+    //make cache entry
+    struct cache_entry *ce = alloc_entry(path, char ^content_type, content, content_length);
+    //add to head of DLL
+    dllist_insert_head(cache, ce);
+
+    //put in hastable
+    hashtable_put(cache->index, path, ce);
+    //moves to next position
+    cache->cur_size++;
 }
 
 /**
@@ -118,4 +168,15 @@ struct cache_entry *cache_get(struct cache *cache, char *path)
     ///////////////////
     // IMPLEMENT ME! //
     ///////////////////
+    //check if ce exists in hash
+    //create struct for cache entry
+    struct cache_entry *ce;
+
+    ce = hastable_get(cache->index, path);
+    if(ce == NULL)
+    {
+        return NULL;
+    }
+    //else return data->move to DLL head so not removed
+    dllist_move_to_head(cache, ce);
 }
