@@ -9,9 +9,7 @@
  */
 struct cache_entry *alloc_entry(char *path, char *content_type, void *content, int content_length)
 {
-    ///////////////////
-    // IMPLEMENT ME! //
-    ///////////////////
+  
     struct cache_entry *ce = malloc(sizeof(*ce));
     ce->path = malloc(strlen(path));
 
@@ -32,9 +30,7 @@ struct cache_entry *alloc_entry(char *path, char *content_type, void *content, i
  */
 void free_entry(struct cache_entry *v_ent)
 {
-    ///////////////////
-    // IMPLEMENT ME! //
-    ///////////////////
+
     free(v_ent->content);
     free(v_ent->content_type);
     free(v_ent->path);
@@ -146,11 +142,9 @@ void cache_free(struct cache *cache)
 
 void cache_put(struct cache *cache, char *path, char *content_type, void *content, int content_length)
 {
-    ///////////////////
-    // IMPLEMENT ME! //
-    ///////////////////
+   
     //make cache entry
-    struct cache_entry *ce = alloc_entry(path, char ^content_type, content, content_length);
+    struct cache_entry *ce = alloc_entry(path, content_type, content, content_length);
     //add to head of DLL
     dllist_insert_head(cache, ce);
 
@@ -165,9 +159,7 @@ void cache_put(struct cache *cache, char *path, char *content_type, void *conten
  */
 struct cache_entry *cache_get(struct cache *cache, char *path)
 {
-    ///////////////////
-    // IMPLEMENT ME! //
-    ///////////////////
+   
     //check if ce exists in hash
     //create struct for cache entry
     struct cache_entry *ce;
